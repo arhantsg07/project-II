@@ -1,0 +1,33 @@
+# Phase 1 services that run alongside an existing Redpanda broker.
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: detection
+    ports:
+      - "5433:5432"
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+      - ./pipeline/schema:/docker-entrypoint-initdb.d:ro   # auto-applies *.sql on first boot
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  # The existing Redpanda broker advertises localhost:9092, so Vector uses
+  # host networking to reach that same broker address.
+  vector:
+    image: timberio/vector:0.41.1-alpine
+    container_name: vector
+    network_mode: host
+    volumes:
+      - ./collector/vector.yaml:/etc/vector/vector.yaml:ro
+      - ./lab/data:/var/log/lab:ro   # attack/benign scripts write here
+    command: ["--config", "/etc/vector/vector.yaml"]
+volumes:
+  pg-data:

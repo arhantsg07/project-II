@@ -1,0 +1,70 @@
+# Optional alternative to collector/vector.yaml, matching the original
+# architecture diagram's "OpenTelemetry Collector" box. Not wired into
+# docker-compose.yml by default (Vector is) - use this if you specifically
+# want OTel Collector on your resume, or need its wider receiver ecosystem
+# later (e.g. OTLP traces/metrics from app instrumentation).
+#
+# To use: in docker-compose.yml, replace the `vector` service's image with
+# `otel/opentelemetry-collector-contrib:0.108.0`, mount this file instead of
+# vector.yaml, and set the command to
+# ["--config=/etc/otelcol/config.yaml"].
+
+receivers:
+  filelog/auth:
+    include: ["/var/log/lab/auth.log"]
+    start_at: beginning
+    operators:
+      - type: add
+        field: attributes.source
+        value: auth
+      - type: add
+        field: attributes.host
+        value: lab-host-1
+
+  filelog/auditd:
+    include: ["/var/log/lab/auditd.log"]
+    start_at: beginning
+    operators:
+      - type: add
+        field: attributes.source
+        value: auditd
+      - type: add
+        field: attributes.host
+        value: lab-host-1
+
+  filelog/dns:
+    include: ["/var/log/lab/dns.log"]
+    start_at: beginning
+    operators:
+      - type: add
+        field: attributes.source
+        value: dns
+      - type: add
+        field: attributes.host
+        value: lab-host-1
+
+exporters:
+  kafka/auth:
+    brokers: ["redpanda:9092"]
+    topic: auth.raw
+    encoding: raw
+  kafka/auditd:
+    brokers: ["redpanda:9092"]
+    topic: auditd.raw
+    encoding: raw
+  kafka/dns:
+    brokers: ["redpanda:9092"]
+    topic: dns.raw
+    encoding: raw
+
+service:
+  pipelines:
+    logs/auth:
+      receivers: [filelog/auth]
+      exporters: [kafka/auth]
+    logs/auditd:
+      receivers: [filelog/auditd]
+      exporters: [kafka/auditd]
+    logs/dns:
+      receivers: [filelog/dns]
+      exporters: [kafka/dns]

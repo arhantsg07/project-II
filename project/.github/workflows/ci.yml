@@ -1,0 +1,43 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  go:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: detection
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.22"
+      - name: Apply schema
+        run: PGPASSWORD=postgres psql -h localhost -U postgres -d detection -f pipeline/schema/001_init.sql
+      - name: go vet
+        run: go vet ./...
+      - name: go test
+        run: go test ./... -v
+        env:
+          TEST_DATABASE_URL: postgres://postgres:postgres@localhost:5432/detection?sslmode=disable
+
+  shellcheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: shellcheck lab scripts
+        run: shellcheck lab/common.sh lab/attacks/*.sh lab/benign/*.sh -e SC1091

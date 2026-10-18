@@ -1,0 +1,89 @@
+# Vector config for Phase 1.
+#
+# Reads three plain log files that the lab scripts (lab/attacks/*.sh,
+# lab/benign/*.sh) append to, tags each line with its source and the
+# simulated hostname, and ships it to the matching Redpanda topic.
+#
+# In a real deployment each of these sources would instead be a real host's
+# /var/log/auth.log, the auditd log, and dnsmasq/BIND query log, with Vector
+# (or the OpenTelemetry Collector) running as an agent on that host. Running
+# Vector against flat files here keeps the whole lab on one machine while you
+# build the pipeline; swapping in real hosts later only means changing these
+# `sources`, not anything downstream.
+
+sources:
+  auth_log:
+    type: file
+    include:
+      - /var/log/lab/auth.log
+    read_from: beginning
+
+  auditd_log:
+    type: file
+    include:
+      - /var/log/lab/auditd.log
+    read_from: beginning
+
+  dns_log:
+    type: file
+    include:
+      - /var/log/lab/dns.log
+    read_from: beginning
+
+transforms:
+  tag_auth:
+    type: remap
+    inputs: ["auth_log"]
+    source: |
+      .host = "lab-host-1"
+      .source = "auth"
+
+  tag_auditd:
+    type: remap
+    inputs: ["auditd_log"]
+    source: |
+      .host = "lab-host-1"
+      .source = "auditd"
+
+  tag_dns:
+    type: remap
+    inputs: ["dns_log"]
+    source: |
+      .host = "lab-host-1"
+      .source = "dns"
+
+sinks:
+  auth_out:
+    type: kafka
+    inputs: ["tag_auth"]
+    bootstrap_servers: "localhost:9092"
+    topic: "auth.raw"
+    encoding:
+      codec: text
+    key_field: .host
+
+  auditd_out:
+    type: kafka
+    inputs: ["tag_auditd"]
+    bootstrap_servers: "localhost:9092"
+    topic: "auditd.raw"
+    encoding:
+      codec: text
+    key_field: .host
+
+  dns_out:
+    type: kafka
+    inputs: ["tag_dns"]
+    bootstrap_servers: "localhost:9092"
+    topic: "dns.raw"
+    encoding:
+      codec: text
+    key_field: .host
+
+  # Lets you watch events scroll by on the host while you're debugging:
+  # `docker compose logs -f vector`
+  console_debug:
+    type: console
+    inputs: ["tag_auth", "tag_auditd", "tag_dns"]
+    encoding:
+      codec: json
