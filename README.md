@@ -1,29 +1,13 @@
 # Mini AI-Assisted Detection & Response
 
-A 6-week, 2-person portfolio build of a scaled-down security detection and
-response pipeline: attack happens on a lab host -> logs stream through
-Redpanda -> land in Postgres -> (later phases) get parsed, matched against
+Security detection and response pipeline: attack happens on a lab host -> logs stream through Redpanda -> land in Postgres -> (later phases) get parsed, matched against
 rules/IOCs/ML, correlated into incidents, investigated by an LLM agent, and
 gated through a policy engine before any action is taken.
-
-This repo is being built in phases that match the 6-week plan. **This
-README currently covers Phase 1 (Week 1: "Foundations and data in
-motion")**. Later phases will extend the same repo rather than replace it.
 
 ```
 lab host logs -> Vector (collector) -> Redpanda -> Go consumer -> Postgres
                                                      (raw, unparsed)
 ```
-
-## Phase 1 scope
-
-By the end of Phase 1 you can run a scripted attack, watch the log lines it
-produces travel through Redpanda, and see them land as rows in Postgres,
-unparsed. That's it. No rules, no parsing, no ML yet - this phase exists to
-prove the data path is reliable before anything is built on top of it.
-
-Everything in `pipeline/schema/001_init.sql`, `cmd/consumer/`,
-`collector/vector.yaml`, and `lab/` is part of Phase 1.
 
 ## Prerequisites
 
@@ -146,9 +130,3 @@ confirm:
   that also needed redirecting to its GitHub mirror in a similarly
   restricted sandbox.
 
-## What's next (Phase 2 preview)
-
-Phase 2 adds a Go normalizer that parses `raw_events` into a common schema
-(host/user/process/ip/domain entities with stable IDs), deduplicates, and
-writes to a new `events` table that Phase 3's rule engine reads from. See
-the full 6-week plan for the complete phase breakdown.
