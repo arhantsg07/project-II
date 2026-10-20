@@ -1,0 +1,1 @@
+{"type":"PATH_WRITE","timestamp":"2026-10-18T10:29:00Z","host":"lab-host-1","uid":"root","pid":5202,"ppid":5100,"exe":"/usr/bin/vim","path":"/etc/sudoers.d/svc-backup","argv":["vim","/etc/sudoers.d/svc-backup"],"parent_exe":"/bin/bash"}

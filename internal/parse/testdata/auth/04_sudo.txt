@@ -1,0 +1,1 @@
+Oct 18 10:27:11 lab-host-1 sudo: ops : TTY=pts/1 ; PWD=/home/ops ; USER=root ; COMMAND=/usr/bin/apt-get upgrade -y

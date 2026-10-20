@@ -1,0 +1,12 @@
+{
+  "event_type": "auth.unrecognized",
+  "event_time": "2026-10-18T10:30:00Z",
+  "outcome": "",
+  "entities": [],
+  "fields": [
+    {
+      "key": "message",
+      "value": "some-daemon[42]: something we have no pattern for yet"
+    }
+  ]
+}

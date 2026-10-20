@@ -1,0 +1,1 @@
+{"type":"PATH_READ","timestamp":"2026-10-18T10:28:00Z","host":"lab-host-1","uid":"www-data","pid":6001,"ppid":5999,"exe":"/bin/cat","path":"/etc/shadow","argv":["cat","/etc/shadow"],"parent_exe":"/bin/bash"}

@@ -1,0 +1,46 @@
+{
+  "event_type": "file.read",
+  "event_time": "2026-10-18T10:28:00Z",
+  "outcome": "",
+  "entities": [
+    {
+      "role": "parent_process",
+      "type": "process_image",
+      "value": "/bin/bash",
+      "id": "8384d7255121e423"
+    },
+    {
+      "role": "process",
+      "type": "process_image",
+      "value": "/bin/cat",
+      "id": "cf920412e31926e4"
+    },
+    {
+      "role": "user",
+      "type": "user",
+      "value": "www-data",
+      "id": "1547777f573d86aa"
+    }
+  ],
+  "fields": [
+    {
+      "key": "argv",
+      "value": [
+        "cat",
+        "/etc/shadow"
+      ]
+    },
+    {
+      "key": "path",
+      "value": "/etc/shadow"
+    },
+    {
+      "key": "pid",
+      "value": 6001
+    },
+    {
+      "key": "ppid",
+      "value": 5999
+    }
+  ]
+}

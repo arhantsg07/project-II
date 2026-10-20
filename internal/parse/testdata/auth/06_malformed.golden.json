@@ -1,0 +1,1 @@
+ERROR: auth: line does not match syslog prefix format: "this is not a syslog line at all"

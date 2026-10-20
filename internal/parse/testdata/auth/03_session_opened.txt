@@ -1,0 +1,1 @@
+Oct 18 10:27:41 lab-host-1 sshd[1099]: pam_unix(sshd:session): session opened for user root by (uid=0)

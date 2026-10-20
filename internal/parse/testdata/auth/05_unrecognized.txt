@@ -1,0 +1,1 @@
+Oct 18 10:27:42 lab-host-1 some-daemon[42]: something we have no pattern for yet

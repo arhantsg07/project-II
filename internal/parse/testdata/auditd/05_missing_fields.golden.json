@@ -1,0 +1,1 @@
+ERROR: auditd: missing required fields (type, exe) in {"timestamp":"2026-10-18T10:27:08Z","host":"lab-host-1"}
