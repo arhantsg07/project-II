@@ -1,0 +1,1 @@
+2026-10-18T10:27:08Z client=127.0.0.1 query=x7qz9f.bad-c2-example.net type=A

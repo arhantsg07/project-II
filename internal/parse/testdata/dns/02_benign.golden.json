@@ -1,0 +1,25 @@
+{
+  "event_type": "dns.query",
+  "event_time": "2026-10-18T10:27:09Z",
+  "outcome": "",
+  "entities": [
+    {
+      "role": "domain",
+      "type": "domain",
+      "value": "pypi.org",
+      "id": "5c3aee6460cdc6f8"
+    },
+    {
+      "role": "src_ip",
+      "type": "ip",
+      "value": "127.0.0.1",
+      "id": "15fac6f61d77abaa"
+    }
+  ],
+  "fields": [
+    {
+      "key": "query_type",
+      "value": "A"
+    }
+  ]
+}

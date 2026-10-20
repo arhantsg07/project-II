@@ -1,0 +1,46 @@
+{
+  "event_type": "file.write",
+  "event_time": "2026-10-18T10:29:00Z",
+  "outcome": "",
+  "entities": [
+    {
+      "role": "parent_process",
+      "type": "process_image",
+      "value": "/bin/bash",
+      "id": "8384d7255121e423"
+    },
+    {
+      "role": "process",
+      "type": "process_image",
+      "value": "/usr/bin/vim",
+      "id": "69fc01b570168cde"
+    },
+    {
+      "role": "user",
+      "type": "user",
+      "value": "root",
+      "id": "7293536707d23984"
+    }
+  ],
+  "fields": [
+    {
+      "key": "argv",
+      "value": [
+        "vim",
+        "/etc/sudoers.d/svc-backup"
+      ]
+    },
+    {
+      "key": "path",
+      "value": "/etc/sudoers.d/svc-backup"
+    },
+    {
+      "key": "pid",
+      "value": 5202
+    },
+    {
+      "key": "ppid",
+      "value": 5100
+    }
+  ]
+}

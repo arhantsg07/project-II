@@ -1,0 +1,31 @@
+{
+  "event_type": "auth.sudo",
+  "event_time": "2026-10-18T10:30:00Z",
+  "outcome": "",
+  "entities": [
+    {
+      "role": "user",
+      "type": "user",
+      "value": "ops",
+      "id": "6e1e17ebec8068f8"
+    }
+  ],
+  "fields": [
+    {
+      "key": "command",
+      "value": "/usr/bin/apt-get upgrade -y"
+    },
+    {
+      "key": "pwd",
+      "value": "/home/ops"
+    },
+    {
+      "key": "run_as",
+      "value": "root"
+    },
+    {
+      "key": "tty",
+      "value": "pts/1"
+    }
+  ]
+}

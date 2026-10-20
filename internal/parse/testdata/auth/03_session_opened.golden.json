@@ -1,0 +1,19 @@
+{
+  "event_type": "auth.session_opened",
+  "event_time": "2026-10-18T10:30:00Z",
+  "outcome": "",
+  "entities": [
+    {
+      "role": "user",
+      "type": "user",
+      "value": "root",
+      "id": "7293536707d23984"
+    }
+  ],
+  "fields": [
+    {
+      "key": "pid",
+      "value": "1099"
+    }
+  ]
+}
