@@ -1,0 +1,10 @@
+id: dns-high-entropy-domain
+title: DNS query with a high-entropy leftmost label
+description: >
+  Flags DNS queries whose leftmost label has Shannon entropy of at least
+  3.1 bits per character.
+attack: ["T1071.004"]
+severity: medium
+detection:
+  - event_type: dns.query
+    domain_entropy_gte: 3.1

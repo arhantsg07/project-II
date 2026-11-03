@@ -1,0 +1,8 @@
+id: new-user-created
+title: User account creation command executed
+description: Detects execution of the useradd binary.
+attack: ["T1136"]
+severity: high
+detection:
+  - event_type: process.exec
+    process: /usr/sbin/useradd

@@ -1,0 +1,8 @@
+id: sudoers-or-cron-write
+title: Write to a sudoers or scheduled-task path
+description: Detects file writes to sudoers or system cron configuration.
+attack: ["T1136", "T1053"]
+severity: high
+detection:
+  - event_type: file.write
+    path_regex: '^/etc/(sudoers(\.d/.*)?|crontab|cron\.(d|daily|hourly|monthly|weekly)/.*)$|^/var/spool/cron(/.*)?$'

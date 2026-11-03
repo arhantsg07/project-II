@@ -55,6 +55,28 @@ extracts entities, deduplicates events, and records parse failures.
              └──── progress: normalizer_cursor
 ```
 
+### Phase 3 — rules, IOCs, and replay
+
+The detector polls normalized `events`, evaluates validated YAML rules from
+`rules/`, checks IP/domain indicators in `iocs`, and stores scored
+`alerts`. Its `alert_cursor` and alert inserts advance in one transaction
+for safe restarts. `cmd/replay` republishes saved log files to the Phase 1
+topics at a controlled rate.
+
+```text
+events + entities ──► detector ──► alerts
+                         ▲
+                         ├── rules/*.yaml
+                         └── iocs
+
+recorded auth/auditd/dns logs ──► cmd/replay ──► Redpanda topics
+```
+
+See [docs/DETECTOR_NOTES.md](./docs/DETECTOR_NOTES.md),
+[docs/RULES_NOTES.md](./docs/RULES_NOTES.md),
+[docs/IOC_NOTES.md](./docs/IOC_NOTES.md), and
+[docs/REPLAY_NOTES.md](./docs/REPLAY_NOTES.md) for phase design details.
+
 Vector and Postgres run in Docker Compose. Redpanda is intentionally an
 already-running external container named `redpanda`; the compose project
 does not create, restart, or remove it. The lab represents one host using
@@ -128,8 +150,8 @@ value above when connecting to this compose setup.
 
 ### Phase 2 — normalization and entity extraction
 
-Run `go run ./cmd/normalizer -pg "<Postgres DSN>"` after Phase 1 has begun
-writing raw rows. The normalizer:
+Run `make normalizer` after Phase 1 has begun writing raw rows (or use
+`make normalize-once` to process one batch). The normalizer:
 
 - polls `raw_events` in ascending ID batches, tracking progress in
   `normalizer_cursor`;
@@ -157,21 +179,42 @@ On a fresh Postgres volume, Compose applies the SQL files in
 - `001_init.sql` creates Phase 1 raw-ingestion tables.
 - `002_normalize.sql` adds Phase 2 entities, events, parse failures, and the
   normalizer cursor.
+- `003_detect.sql` adds Phase 3 indicators, alerts, and the detector cursor.
 
 Postgres only runs these initialization scripts when the data directory is
 empty. If you have a volume created before Phase 2 was added, apply the
-additive Phase 2 schema once:
+additive migrations once, in order:
 
 ```bash
 PGPASSWORD=postgres psql -h localhost -p 5433 -U postgres -d detection \
   -f pipeline/schema/002_normalize.sql
+PGPASSWORD=postgres psql -h localhost -p 5433 -U postgres -d detection \
+  -f pipeline/schema/003_detect.sql
 ```
+
+## Phase 3 quick use
+
+After raw events have been normalized, apply the schema above if needed,
+then seed the synthetic indicators and run detection:
+
+```bash
+make seed-iocs
+make detect-once
+make detect-health
+```
+
+For a live pipeline, run `make consumer`, `make normalizer`, and `make
+detector` in separate terminals. Record and replay the current lab files with
+`mkdir -p lab/recordings/run1 && cp lab/data/*.log lab/recordings/run1/`,
+then `make replay DIR=lab/recordings/run1 RATE=20`. Replay requires the
+Redpanda broker and its topic routing to be available.
 
 ## Tests
 
 ```bash
 go test ./...
 go vet ./...
+gofmt -l .
 ```
 
 The normalizer tests exercise parsing, entity extraction, replay behavior,
@@ -187,10 +230,14 @@ TEST_DATABASE_URL="postgres://postgres:postgres@localhost:5433/detection?sslmode
 ```text
 cmd/consumer/          Phase 1 Redpanda -> Postgres raw consumer
 cmd/normalizer/        Phase 2 Postgres raw_events -> normalized events
+cmd/detector/          Phase 3 Postgres events -> rule and IOC alerts
+cmd/replay/            Phase 3 recorded logs -> Redpanda topics
 internal/parse/        Source parsers, event types, entity IDs, dedup keys
-pipeline/schema/       Phase 1 and additive Phase 2 SQL schemas
+internal/rules/        Phase 3 YAML rule validation and matching
+rules/                 Version-controlled detection rules
+pipeline/schema/       Phase 1-3 additive SQL schemas
 collector/             Vector config and an OTel Collector example
-lab/                   Attack scenarios and benign log generator
-docs/                  Event schema and collector/normalizer design notes
+lab/                   Scenarios, benign logs, recordings, and IOC seeds
+docs/                  Schema and phase design notes
 Makefile               Local compose, lab, consumer, and health workflows
 ```

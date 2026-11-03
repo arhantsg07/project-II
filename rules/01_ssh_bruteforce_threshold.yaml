@@ -1,0 +1,13 @@
+id: ssh-bruteforce-threshold
+title: Repeated SSH login failures from one source
+description: >
+  Flags five or more failed SSH logins from the same source IP in a
+  five-minute window.
+attack: ["T1110"]
+severity: medium
+detection:
+  - event_type: auth.login_failure
+aggregation:
+  group_by: src_ip
+  window: 5m
+  count_gte: 5
