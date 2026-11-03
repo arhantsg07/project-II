@@ -27,7 +27,7 @@ func TestInsertBatch(t *testing.T) {
 	defer db.Close()
 	ctx := context.Background()
 
-	if _, err := db.ExecContext(ctx, `TRUNCATE raw_events, ingest_watermarks`); err != nil {
+	if _, err := db.ExecContext(ctx, `TRUNCATE raw_events, ingest_watermarks CASCADE`); err != nil {
 		t.Fatalf("truncate: %v", err)
 	}
 

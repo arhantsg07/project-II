@@ -1,0 +1,8 @@
+id: shadow-file-read
+title: Read of the local shadow password file
+description: Detects a file.read event for /etc/shadow.
+attack: ["T1003"]
+severity: high
+detection:
+  - event_type: file.read
+    path: /etc/shadow

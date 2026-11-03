@@ -1,0 +1,12 @@
+id: reverse-shell-process
+title: Process execution consistent with a reverse shell
+description: >
+  Detects a bash TCP redirect or netcat execution with its -e option.
+attack: ["T1059", "T1071"]
+severity: high
+detection:
+  - event_type: process.exec
+    argv_contains: /dev/tcp
+  - event_type: process.exec
+    process: /bin/nc
+    argv_contains: -e
